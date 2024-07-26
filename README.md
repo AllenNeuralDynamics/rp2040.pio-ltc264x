@@ -1,6 +1,6 @@
 Driver for producing DAC output values from the LTC2641 and LTC2642.
 
-This library uses the PIO program to send analog values from memory to the LTC2641.
+This library uses a PIO program to send analog values from memory to the LTC2641.
 
 ## Examples
 To see this driver in action, have a look at the [examples](./examples) folder.
