@@ -2,20 +2,39 @@
 
 // FIXME: rewrite this for the LTC264x
 
-PIO_LTC264x::PIO_LTC264x(PIO pio, uint8_t sck_pin, uint8_t pico_pin)
-:pio_{pio}
+PIO_LTC264x::PIO_LTC264x(PIO pio, uint8_t sck_pin, uint8_t pico_pin,
+                         bool add_program, int32_t program_offset)
+:pio_{pio}, offset_{program_offset}
 {
+    // 3 Legit Cases:
+    // 1. Add a program at the next available offset.
+    // 2. Add a program at a specified offset.
+    // 3. Use an existing program at a specified offset.
+
     // Note: CS_PIN is fixed as SCK_PIN + 1.
-    uint offset;
-    offset = pio_add_program(pio_, &spi_cpha0_cs_program);
+    if (add_program == true)
+    {
+        // Add program at a specified offset.
+        if (program_offset >= 0)
+            pio_add_program_at_offset(pio_, &spi_cpha0_cs_program, offset_);
+        else
+            offset_ = pio_add_program(pio_, &spi_cpha0_cs_program);
+    }
+    // Else: use an existing program at the specified offset. (Must be >= 0).
     sm_ = pio_claim_unused_sm(pio_, true);
     // Configure pio program. Note: cs_pin is sck_pin + 1.
-    setup_pio_ltc264x(pio_, sm_, offset, sck_pin, pico_pin);
+    setup_pio_ltc264x(pio_, sm_, offset_, sck_pin, pico_pin);
 }
 
 PIO_LTC264x::~PIO_LTC264x()
 {
-    // TODO: state machine cleanup.
+    // FIXME: state machine cleanup.
+}
+
+void PIO_LTC264x::start() const
+{
+    // launch the PIO program.
+    pio_ltc264x_start(pio_, sm_);
 }
 
 void PIO_LTC264x::write_value(uint16_t value)
@@ -131,9 +150,3 @@ void PIO_LTC264x::_setup_dma_stream_from_memory(
     //printf("Configured DMA control channel.\r\n");
 }
 */
-
-void PIO_LTC264x::start()
-{
-    // launch the PIO program.
-    pio_ltc264x_start(pio_, sm_);
-}
