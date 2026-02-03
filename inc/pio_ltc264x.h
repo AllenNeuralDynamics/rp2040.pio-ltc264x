@@ -45,13 +45,13 @@ public:
 /**
  * \brief
  */
-    int32_t get_offset()
+    int32_t get_offset() const
     {return offset_;}
 
 /**
  * \brief
  */
-    int32_t get_sm()
+    int32_t get_sm() const
     {return sm_;}
 
 /**
