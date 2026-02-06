@@ -22,6 +22,7 @@
 class PIO_LTC264x
 {
 public:
+
 /**
  * \brief constructor. Setup gpio pins, state machine.
  * \note CS pin is \p sck_pin + 1.
@@ -53,6 +54,12 @@ public:
  */
     int32_t get_sm() const
     {return sm_;}
+
+/**
+ * \brief
+ */
+    PIO& get_pio() const
+    {return pio_;}
 
 /**
  * \brief Write a single value to output to the DAC.
