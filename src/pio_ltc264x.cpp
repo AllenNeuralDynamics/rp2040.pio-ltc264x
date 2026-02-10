@@ -2,7 +2,7 @@
 
 // FIXME: rewrite this for the LTC264x
 
-PIO_LTC264x::PIO_LTC264x(PIO pio, uint8_t sck_pin, uint8_t pico_pin,
+PIO_LTC264x::PIO_LTC264x(PIO pio, size_t sck_pin, size_t pico_pin,
                          bool add_program, int32_t program_offset)
 :pio_{pio}, offset_{program_offset}
 {

@@ -33,7 +33,7 @@ public:
  *  If specified as < 0 (default), add the program at the next available offset when
  *  `add_program == 1`. (Invalid to leave as < 0 (unspecified) when \p add_program is true.)
  */
-    PIO_LTC264x(PIO pio, uint8_t sck_pin, uint8_t pico_pin,
+    PIO_LTC264x(PIO pio, size_t sck_pin, size_t pico_pin,
                 bool add_program = true, int32_t program_offset = -1);
 
     ~PIO_LTC264x();
@@ -58,7 +58,7 @@ public:
 /**
  * \brief
  */
-    PIO& get_pio() const
+    PIO& get_pio()
     {return pio_;}
 
 /**
