@@ -73,6 +73,12 @@ public:
     void write_value(uint16_t value);
 
 /**
+ * \brief get the most-recently-written value written with write_value().
+ */
+    inline uint16_t get_last_value()
+    {return last_value_;}
+
+/**
  * \brief Configure single-shot or continuous streaming of a specified number
     of values to a specified memory location at the specified interval.
 */
@@ -137,6 +143,7 @@ private:
     uint sm_;
     PIO pio_;
     int32_t offset_; // pio program offset.
+    uint16_t last_value_;
     uint16_t* data_ptr_[1];   // Data that the reconfiguration channel will write back
                             // to the sample channel. In this case, just the
                             // address of the location of the adc samples. This

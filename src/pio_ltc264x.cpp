@@ -4,7 +4,7 @@
 
 PIO_LTC264x::PIO_LTC264x(PIO pio, size_t sck_pin, size_t pico_pin,
                          bool add_program, int32_t program_offset)
-:pio_{pio}, offset_{program_offset}
+:pio_{pio}, offset_{program_offset}, last_value_{0}
 {
     // 3 Legit Cases:
     // 1. Add a program at the next available offset.
@@ -41,10 +41,11 @@ void PIO_LTC264x::write_value(uint16_t value)
 {
     // Push value into the PIO TX FIFO.
     // Note: data is loaded MSbit first from the TX FIFO (32-bit).
-    pio_sm_put_blocking(pio_, sm_, (value<<16)); // blocks if the TX FIFO is
-                                                 // full, which should not
-                                                 // happen unless we are calling
-                                                 // it too fast.
+    pio_sm_put_blocking(pio_, sm_, uint32_t(value<<16)); // blocks if the TX
+                                                 // FIFO is full, which should
+                                                 // not happen unless we are
+                                                // calling it too fast.
+    last_value_ = value;
 }
 
 /*
