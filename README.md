@@ -9,7 +9,7 @@ Additionally here is a project that use this driver in the wild:
 
 ## Requirements
 This program assumes:
-* 125MHz pio clock source
+* 200MHz (maximum) pio clock source
 
 This program consumes:
 * 1 PIO state machine

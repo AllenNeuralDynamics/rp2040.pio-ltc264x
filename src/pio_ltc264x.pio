@@ -36,6 +36,8 @@
 ; CPHA=0: data is captured on the leading edge of each SCK pulse (including
 ; the first pulse), and transitions on the trailing edge
 
+.pio_version 0 // only requires PIO version 0
+
 .program spi_cpha0_cs
 .side_set 2
 

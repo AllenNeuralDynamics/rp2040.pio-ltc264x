@@ -22,13 +22,44 @@
 class PIO_LTC264x
 {
 public:
+
 /**
  * \brief constructor. Setup gpio pins, state machine.
  * \note CS pin is \p sck_pin + 1.
+ * \param add_program if true (default) upload the pio program to the specified
+ *  PIO bank.
+ * \param program_offset if specified >= 0, either add the program at this
+ *  offset (`add_program = 1`) or use the program at this offset (`add_program = 0`).
+ *  If specified as < 0 (default), add the program at the next available offset when
+ *  `add_program == 1`. (Invalid to leave as < 0 (unspecified) when \p add_program is true.)
  */
-    PIO_LTC264x(PIO pio, uint8_t sck_pin, uint8_t pico_pin);
+    PIO_LTC264x(PIO pio, size_t sck_pin, size_t pico_pin,
+                bool add_program = true, int32_t program_offset = -1);
 
     ~PIO_LTC264x();
+
+/**
+ * \brief launch the pio program
+ */
+    void start() const;
+
+/**
+ * \brief
+ */
+    int32_t get_offset() const
+    {return offset_;}
+
+/**
+ * \brief
+ */
+    int32_t get_sm() const
+    {return sm_;}
+
+/**
+ * \brief
+ */
+    PIO& get_pio()
+    {return pio_;}
 
 /**
  * \brief Write a single value to output to the DAC.
@@ -40,6 +71,12 @@ public:
  *  setup_dma_stream_from_memory or setup_dma_stream_from_memory_with_interrupt.
 */
     void write_value(uint16_t value);
+
+/**
+ * \brief get the most-recently-written value written with write_value().
+ */
+    inline uint16_t get_last_value()
+    {return last_value_;}
 
 /**
  * \brief Configure single-shot or continuous streaming of a specified number
@@ -99,17 +136,14 @@ public:
                                        irq_handler_t handler_func);
 */
 
-/**
- * \brief launch the pio program
- */
-    void start();
-
     int samp_chan_; // DMA channel used to collect samples and fire an interrupt
                     // if configured to do so. If it fires an interrupt,
                     // a DMA handler function needs to clear it.
 private:
-    PIO pio_;
     uint sm_;
+    PIO pio_;
+    int32_t offset_; // pio program offset.
+    uint16_t last_value_;
     uint16_t* data_ptr_[1];   // Data that the reconfiguration channel will write back
                             // to the sample channel. In this case, just the
                             // address of the location of the adc samples. This
