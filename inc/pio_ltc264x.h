@@ -1,12 +1,12 @@
 #ifndef PIO_LTC264X_H
 #define PIO_LTC264X_H
-
 #include <pico/stdlib.h>
 #include <hardware/dma.h>
 #include <hardware/pio.h>
 #include <hardware/regs/dreq.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <limits>
 #include <pio_ltc264x.pio.h> // auto-generated upon compilation.
 
 
@@ -22,6 +22,7 @@
 class PIO_LTC264x
 {
 public:
+    static const uint16_t OUTPUT_MIDSCALE = std::numeric_limits<uint16_t>::max()/2;
 
 /**
  * \brief constructor. Setup gpio pins, state machine.
@@ -60,6 +61,13 @@ public:
  */
     PIO& get_pio()
     {return pio_;}
+
+/**
+ * \brief get the tx_fifo address.
+ * \details useful for feeding this DAC using a DMA transfer.
+ */
+    volatile void* get_tx_fifo_address()
+    {return &pio_->txf[sm_];}
 
 /**
  * \brief Write a single value to output to the DAC.
